@@ -676,6 +676,16 @@
 		event.preventDefault();
 	}
 
+	function setOverflow(target,direction,value) {
+		if(direction === 'horizontal') {
+			target.css('overflow-x', value);
+		} else if(direction === 'vertical') {
+			target.css('overflow-y', value);
+		} else {
+			target.css('overflow', value);
+		}
+	}
+
 	// This function takes a jQuery element, some
 	// (optional) options, and sets up event metadata
 	// for each instance the plug-in affects
@@ -731,9 +741,9 @@
 			// add thumbs and listeners (if we're showing them)
 			if (options.showThumbs) {
 				if (compat.overflowScrolling) {
-					target.css('overflow', 'scroll');
+					setOverflow(target, options.direction, 'scroll');
 				} else {
-					target.css('overflow', 'hidden');
+					setOverflow(target, options.direction, 'hidden');
 					data.thumbs = thumbs = createThumbs(target, sizing, options);
 					if (thumbs.added) {
 						moveThumbs(thumbs, sizing, target.scrollLeft(), target.scrollTop());
@@ -743,7 +753,11 @@
 					}
 				}
 			} else {
-				target.css('overflow', 'hidden');
+				if (compat.overflowScrolling) {
+					setOverflow(target, options.direction, 'scroll');
+				} else {
+					setOverflow(target, options.direction, 'hidden');	
+				}				
 			}
 
 			target.data(datakey, data);
